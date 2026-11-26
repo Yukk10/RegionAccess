@@ -1,0 +1,147 @@
+# ==================================================================================
+#  RegionAccess — дополнение к WorldGuard
+#  Белый и чёрный списки для регионов + право на таблички в привате.
+# ==================================================================================
+#
+#  Перезагрузить этот файл без рестарта сервера:  /rgaccess reload
+#
+#  Весь текст пишется в формате MiniMessage (https://docs.advntr.dev/minimessage/format.html):
+#    <red> <gold> <gray> <white> <#FF5555>   — цвета
+#    <bold> <italic> <underlined>            — оформление
+#    <gradient:gold:yellow>Текст</gradient>  — градиент
+#  Если оставить сообщение пустым ("") — оно не будет отправляться вовсе.
+#
+#  ПРАВА (permissions):
+#    regionaccess.use            — /rg whitelist и /rg blacklist в своём регионе (по умолчанию: всем)
+#    regionaccess.bypass         — белые и чёрные списки на игрока не действуют (админ-состав)
+#    regionaccess.manage.others  — управлять списками ЛЮБОГО региона, а не только своего
+#    regionaccess.signs          — ставить, ломать и редактировать таблички в чужом привате
+#                                  (только в мирах из раздела signs.worlds ниже)
+#    regionaccess.reload         — /rgaccess reload
+#    regionaccess.admin          — все права выше сразу
+# ==================================================================================
+
+
+# Какие команды перехватываются (то, что пишется после "/").
+# Плагин реагирует только на подкоманды whitelist и blacklist, всё остальное
+# по-прежнему обрабатывает WorldGuard.
+command-aliases:
+  - rg
+  - region
+  - regions
+  - worldguard:rg
+  - worldguard:region
+  - worldguard:regions
+
+
+# ----------------------------------------------------------------------------------
+#  Предупреждения посторонним на закрытой территории
+# ----------------------------------------------------------------------------------
+warnings:
+  # Как часто (в секундах) показывать предупреждение игроку,
+  # который находится в регионе с белым списком или в чёрном списке региона.
+  interval-seconds: 5
+
+  # Сколько предупреждений получит игрок. Если после последнего он так и не ушёл,
+  # выполняются команды из punish-commands (по умолчанию — телепорт на спавн).
+  max-warnings: 10
+
+  # true  — если игрок покинул регион, счётчик предупреждений обнуляется.
+  # false — счётчик сохраняется до телепорта или выхода с сервера.
+  reset-on-leave: true
+
+  # Где показывать предупреждение (можно включить несколько вариантов сразу).
+  show-title: true       # заголовок по центру экрана
+  show-actionbar: true   # строка над хотбаром
+  show-chat: false       # сообщение в чат
+
+  # Длительность заголовка, в тиках (20 тиков = 1 секунда).
+  title-fade-in: 5
+  title-stay: 70
+  title-fade-out: 15
+
+  # Команды, выполняемые ОТ ИМЕНИ КОНСОЛИ, когда лимит предупреждений исчерпан.
+  # {player} — ник игрока. Слеш в начале не нужен.
+  punish-commands:
+    - "spawn {player}"
+
+
+# ----------------------------------------------------------------------------------
+#  Таблички в привате (право regionaccess.signs)
+# ----------------------------------------------------------------------------------
+signs:
+  # Миры, в которых игрок с правом regionaccess.signs может ставить, ломать
+  # и редактировать таблички (обычные и подвесные) в любых регионах.
+  # "*" — во всех мирах. Названия миров — как папки мира на сервере.
+  worlds:
+    - world
+    - world_nether
+    - world_the_end
+
+
+# ----------------------------------------------------------------------------------
+#  Сообщения
+# ----------------------------------------------------------------------------------
+#  Теги, которые подставляет плагин:
+#    <prefix>    — префикс из строки prefix ниже
+#    <region>    — название (ID) региона
+#    <player>    — ник игрока
+#    <count>     — номер текущего предупреждения / количество записей
+#    <max>       — лимит предупреждений (warnings.max-warnings)
+#    <remaining> — сколько предупреждений осталось до перемещения на спавн
+#    <state>     — состояние белого списка (строки state-on / state-off)
+# ----------------------------------------------------------------------------------
+messages:
+  prefix: "<dark_gray>[<gold>Регионы</gold>]</dark_gray>"
+
+  # --- Предупреждение: регион закрыт белым списком, игрок не является участником ---
+  whitelist-warning:
+    title: "<red><bold>Доступ ограничен"
+    subtitle: "<gray>Территория <white><region></white> закрыта для посторонних. Пожалуйста, покиньте её."
+    actionbar: "<gray>Предупреждение <yellow><count></yellow> из <yellow><max></yellow>. По истечении вы будете перемещены на спавн."
+    chat: "<prefix> <red>Территория <white><region></white> закрыта для посторонних. Пожалуйста, покиньте её. <gray>(<count>/<max>)"
+
+  # --- Предупреждение: игрок внесён в чёрный список региона ---
+  blacklist-warning:
+    title: "<dark_red><bold>Доступ запрещён"
+    subtitle: "<gray>Владелец территории <white><region></white> ограничил вам доступ. Пожалуйста, покиньте её."
+    actionbar: "<gray>Предупреждение <yellow><count></yellow> из <yellow><max></yellow>. По истечении вы будете перемещены на спавн."
+    chat: "<prefix> <red>Владелец территории <white><region></white> ограничил вам доступ. Пожалуйста, покиньте её. <gray>(<count>/<max>)"
+
+  # --- Игрок не ушёл после всех предупреждений и был перемещён ---
+  punished-whitelist: "<prefix> <red>Вы были перемещены на спавн, так как не покинули территорию <white><region></white>, закрытую для посторонних."
+  punished-blacklist: "<prefix> <red>Вы были перемещены на спавн, так как не покинули территорию <white><region></white>, доступ к которой вам ограничен владельцем."
+
+  # --- Общие ответы команд ---
+  no-permission: "<prefix> <red>У вас недостаточно прав для выполнения этой команды."
+  player-only: "<prefix> <red>Данная команда доступна только игрокам."
+  not-in-region: "<prefix> <red>Вы не находитесь на территории какого-либо региона."
+  not-owner: "<prefix> <red>Вы не являетесь владельцем региона, на территории которого находитесь."
+
+  # --- /rg whitelist ---
+  state-on: "<green>включён</green>"
+  state-off: "<red>выключен</red>"
+  whitelist-usage: "<prefix> <gray>Использование: <white>/rg whitelist on|off</white>. Белый список региона <white><region></white> сейчас <state><gray>."
+  whitelist-enabled: "<prefix> <green>Белый список региона <white><region></white> включён. Находиться на территории могут только участники региона."
+  whitelist-disabled: "<prefix> <yellow>Белый список региона <white><region></white> выключен. Территория открыта для посещения."
+  whitelist-already-enabled: "<prefix> <gray>Белый список региона <white><region></white> уже включён."
+  whitelist-already-disabled: "<prefix> <gray>Белый список региона <white><region></white> уже выключен."
+
+  # --- /rg blacklist ---
+  blacklist-usage: "<prefix> <gray>Использование: <white>/rg blacklist add|remove <ник></white> или <white>/rg blacklist list</white>"
+  player-not-found: "<prefix> <red>Игрок <white><player></white> не найден. Он должен хотя бы раз заходить на сервер."
+  blacklist-self: "<prefix> <red>Вы не можете внести в чёрный список самого себя."
+  blacklist-owner: "<prefix> <red>Игрок <white><player></white> является владельцем региона <white><region></white> и не может быть внесён в чёрный список."
+  blacklist-added: "<prefix> <green>Игрок <white><player></white> внесён в чёрный список региона <white><region></white>."
+  blacklist-already: "<prefix> <gray>Игрок <white><player></white> уже находится в чёрном списке региона <white><region></white>."
+  blacklist-removed: "<prefix> <green>Игрок <white><player></white> исключён из чёрного списка региона <white><region></white>."
+  blacklist-not-listed: "<prefix> <gray>Игрок <white><player></white> отсутствует в чёрном списке региона <white><region></white>."
+  blacklist-empty: "<prefix> <gray>Чёрный список региона <white><region></white> пуст."
+  blacklist-header: "<prefix> <gray>Чёрный список региона <white><region></white> <dark_gray>(<count>)</dark_gray>:"
+  blacklist-entry: "<dark_gray>  • <white><player>"
+  # Отправляется игроку (если он в сети), когда его вносят в чёрный список.
+  blacklist-target-notify: "<prefix> <red>Владелец региона <white><region></white> ограничил вам доступ на свою территорию."
+
+  # --- /rgaccess ---
+  admin-usage: "<prefix> <gray>Использование: <white>/rgaccess reload"
+  reloaded: "<prefix> <green>Конфигурация RegionAccess перезагружена."

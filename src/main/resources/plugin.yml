@@ -1,0 +1,39 @@
+name: RegionAccess
+version: '${version}'
+main: dev.yukio.regionaccess.RegionAccessPlugin
+api-version: '1.21'
+description: Белый и чёрный списки для регионов WorldGuard, право на таблички в привате.
+authors: [Yukk10]
+depend: [WorldGuard]
+
+commands:
+  rgaccess:
+    description: Администрирование RegionAccess
+    usage: /rgaccess reload
+    permission: regionaccess.reload
+
+permissions:
+  regionaccess.use:
+    description: Управление белым и чёрным списком в своём регионе (/rg whitelist, /rg blacklist)
+    default: true
+  regionaccess.bypass:
+    description: Белые и чёрные списки регионов на игрока не действуют
+    default: op
+  regionaccess.manage.others:
+    description: Управление белым и чёрным списком любого региона, а не только своего
+    default: op
+  regionaccess.signs:
+    description: Установка, разрушение и редактирование табличек в чужих регионах (в мирах из config.yml)
+    default: op
+  regionaccess.reload:
+    description: Перезагрузка конфигурации (/rgaccess reload)
+    default: op
+  regionaccess.admin:
+    description: Все права администратора RegionAccess
+    default: op
+    children:
+      regionaccess.use: true
+      regionaccess.bypass: true
+      regionaccess.manage.others: true
+      regionaccess.signs: true
+      regionaccess.reload: true
