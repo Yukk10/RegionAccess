@@ -5,6 +5,7 @@ import dev.yukio.regionaccess.command.RegionCommandListener;
 import dev.yukio.regionaccess.config.Messages;
 import dev.yukio.regionaccess.config.PluginSettings;
 import dev.yukio.regionaccess.listener.SignAccessListener;
+import dev.yukio.regionaccess.listener.WorldGuardBypassListener;
 import dev.yukio.regionaccess.region.RegionService;
 import dev.yukio.regionaccess.storage.RegionDataStore;
 import dev.yukio.regionaccess.task.WarningTask;
@@ -31,6 +32,7 @@ public final class RegionAccessPlugin extends JavaPlugin {
         var pm = getServer().getPluginManager();
         pm.registerEvents(new RegionCommandListener(this), this);
         pm.registerEvents(new SignAccessListener(this), this);
+        pm.registerEvents(new WorldGuardBypassListener(this), this);
 
         warningTask = new WarningTask(this);
         pm.registerEvents(warningTask, this);

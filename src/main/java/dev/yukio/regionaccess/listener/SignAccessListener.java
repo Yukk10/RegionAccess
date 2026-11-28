@@ -19,8 +19,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 /**
  * Право regionaccess.signs: в мирах из signs.worlds игрок может ставить, ломать
- * и редактировать таблички в чужих регионах. WorldGuard отменяет такие события
- * раньше, а этот обработчик (приоритет HIGHEST) снимает отмену — только для табличек.
+ * и редактировать таблички в чужих регионах.
+ * <p>
+ * Основную работу делает {@link WorldGuardBypassListener}: он разрешает действие до проверки
+ * WorldGuard, поэтому тот ничего не отменяет и не пишет сообщение об отказе. Этот обработчик
+ * (приоритет HIGHEST) — запасной: снимает отмену, если событие всё же отменил кто-то другой.
  */
 public final class SignAccessListener implements Listener {
 
