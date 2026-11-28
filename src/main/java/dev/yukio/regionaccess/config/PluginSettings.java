@@ -20,7 +20,7 @@ public record PluginSettings(
         Title.Times titleTimes,
         List<String> punishCommands,
         Set<String> signWorlds,
-        boolean signsInAllWorlds
+        Set<String> entityWorlds
 ) {
 
     public static PluginSettings load(FileConfiguration cfg) {
@@ -37,7 +37,6 @@ public record PluginSettings(
                 ticks(cfg.getInt("warnings.title-stay", 70)),
                 ticks(cfg.getInt("warnings.title-fade-out", 15)));
 
-        Set<String> worlds = lowerSet(cfg.getStringList("signs.worlds"));
 
         return new PluginSettings(
                 aliases,
@@ -49,12 +48,20 @@ public record PluginSettings(
                 cfg.getBoolean("warnings.show-chat", false),
                 times,
                 List.copyOf(cfg.getStringList("warnings.punish-commands")),
-                worlds,
-                worlds.contains("*"));
+                lowerSet(cfg.getStringList("signs.worlds")),
+                lowerSet(cfg.getStringList("entities.worlds")));
     }
 
     public boolean signsAllowedIn(String worldName) {
-        return signsInAllWorlds || signWorlds.contains(worldName.toLowerCase(Locale.ROOT));
+        return matches(signWorlds, worldName);
+    }
+
+    public boolean entitiesAllowedIn(String worldName) {
+        return matches(entityWorlds, worldName);
+    }
+
+    private static boolean matches(Set<String> worlds, String worldName) {
+        return worlds.contains("*") || worlds.contains(worldName.toLowerCase(Locale.ROOT));
     }
 
     private static Duration ticks(int ticks) {

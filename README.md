@@ -1,6 +1,6 @@
 # RegionAccess
 
-Дополнение к **WorldGuard**: белый и чёрный списки для регионов и право администрации на таблички в чужом привате.
+Дополнение к **WorldGuard**: белый и чёрный списки для регионов и права администрации на таблички и мобов в чужом привате.
 
 - Ядро: **Leaf / Paper 26.3** (Java 25)
 - Зависимость: **WorldGuard 7** (+ WorldEdit / FAWE)
@@ -43,10 +43,11 @@
 | `regionaccess.bypass` | op | Белые и чёрные списки на игрока не действуют |
 | `regionaccess.manage.others` | op | Управлять списками любого региона, а не только своего |
 | `regionaccess.signs` | op | Ставить, ломать и редактировать таблички в чужом привате (миры — `signs.worlds` в конфиге) |
+| `regionaccess.entity` | op | Бить и ломать сущности в чужом привате: мобов, рамки, картины, стойки, вагонетки, лодки. На игроков не действует (миры — `entities.worlds` в конфиге) |
 | `regionaccess.reload` | op | `/rgaccess reload` |
 | `regionaccess.admin` | op | Все права выше |
 
-> При установке/поломке таблички с правом `regionaccess.signs` WorldGuard всё равно может написать своё «Hey! Sorry, but you can't…» — это сообщение от WorldGuard, действие при этом выполняется.
+Действия с правами `regionaccess.signs` и `regionaccess.entity` разрешаются ещё до проверки WorldGuard, поэтому его сообщение «Hey! Sorry, but you can't…» не появляется.
 
 ## Конфигурация
 

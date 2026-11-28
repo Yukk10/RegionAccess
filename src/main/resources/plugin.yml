@@ -2,7 +2,7 @@ name: RegionAccess
 version: '${version}'
 main: dev.yukio.regionaccess.RegionAccessPlugin
 api-version: '1.21'
-description: Белый и чёрный списки для регионов WorldGuard, право на таблички в привате.
+description: Белый и чёрный списки для регионов WorldGuard, права на таблички и мобов в привате.
 authors: [Yukk10]
 depend: [WorldGuard]
 
@@ -25,6 +25,9 @@ permissions:
   regionaccess.signs:
     description: Установка, разрушение и редактирование табличек в чужих регионах (в мирах из config.yml)
     default: op
+  regionaccess.entity:
+    description: Бить и ломать сущности (кроме игроков) в чужих регионах (в мирах из config.yml)
+    default: op
   regionaccess.reload:
     description: Перезагрузка конфигурации (/rgaccess reload)
     default: op
@@ -36,4 +39,5 @@ permissions:
       regionaccess.bypass: true
       regionaccess.manage.others: true
       regionaccess.signs: true
+      regionaccess.entity: true
       regionaccess.reload: true
